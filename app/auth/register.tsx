@@ -4,6 +4,8 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 
+const BASE_URL = "http://192.168.0.5:8080";
+
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -13,10 +15,30 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     try {
-      await register(username, email, password);
-      router.replace("/(tabs)");
+      const response = await fetch(`${BASE_URL}/api/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify ({
+          username,
+          email,
+          password,
+        }),
+      }); 
+
+      const data = await response.json();
+
+      if(response.ok) {
+        await register(username,email,password);
+        router.replace("/(tabs)");
+      }
+      else {
+        alert("Registration error"+data.error);
+      }
     } catch (error) {
       console.error("Registration error: ", error);
+      alert("An error occurred, please try again");
     }
   };
 

@@ -1,15 +1,17 @@
+
 #!/usr/bin/env python3
 import psycopg2
+import bcrypt
 
-# Update these connection settings to match your PostgreSQL configuration
+# Update these connection settings to match your PostgreSQL configuration.
 DB_HOST = "localhost"
 DB_NAME = "campusconnect"
-DB_USER = "bennh"      # replace with your PostgreSQL user
-DB_PASSWORD = "houghton"  # replace with your PostgreSQL password
+DB_USER = "bennh"
+DB_PASSWORD = "houghton"
 
 def main():
     try:
-        # Connect to the PostgreSQL database
+        # Connect to the PostgreSQL database.
         conn = psycopg2.connect(
             host=DB_HOST,
             database=DB_NAME,
@@ -19,19 +21,20 @@ def main():
         conn.autocommit = True
         cur = conn.cursor()
 
-        # Create the users table if it doesn't exist
+        # Create the users table if it doesn't exist.
+        # Note: Make sure the table schema matches your Go model.
         create_table_query = """
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(50) UNIQUE NOT NULL,
             email VARCHAR(100) UNIQUE NOT NULL,
-            password VARCHAR(100) NOT NULL
+            password_hash TEXT NOT NULL
         );
         """
         cur.execute(create_table_query)
         print("Users table created or already exists.")
 
-        # Define placeholder users
+        # Define 10 placeholder users with plain-text passwords.
         placeholder_users = [
             ("user1", "user1@example.com", "password1"),
             ("user2", "user2@example.com", "password2"),
@@ -45,16 +48,20 @@ def main():
             ("user10", "user10@example.com", "password10")
         ]
 
-        # Insert the placeholder users (ignore duplicates)
+        # Insert placeholder users with hashed passwords.
         insert_query = """
-        INSERT INTO users (username, email, password)
+        INSERT INTO users (username, email, password_hash)
         VALUES (%s, %s, %s)
         ON CONFLICT (username) DO NOTHING;
         """
-        cur.executemany(insert_query, placeholder_users)
-        print("Inserted placeholder users.")
+        for username, email, password in placeholder_users:
+            # Hash the password using bcrypt.
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            cur.execute(insert_query, (username, email, hashed.decode('utf-8')))
+        
+        print("Inserted placeholder users with hashed passwords.")
 
-        # Clean up
+        # Clean up.
         cur.close()
         conn.close()
         print("Database connection closed.")
@@ -64,3 +71,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

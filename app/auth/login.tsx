@@ -4,19 +4,39 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 
+const BASE_URL = "http://192.168.0.5:8080";
+
 export default function LoginScreen() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
-      await login(username, password);
-      // On successful login, navigate to the main tabs
-      router.replace("/(tabs)"); // main app layout
+      const response = await fetch(`${BASE_URL}/api/login`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify ({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if(response.ok){
+        await login(email, password);
+        router.replace("/(tabs)");
+      }
+      else {
+        alert("Login Error" + data.error);
+      }
     } catch (error) {
-      console.error("Login error: ", error);
+        console.error("Login error: ", error);
+        alert("An error occurred, please try again");
     }
   };
 
@@ -26,9 +46,9 @@ export default function LoginScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <TextInput
