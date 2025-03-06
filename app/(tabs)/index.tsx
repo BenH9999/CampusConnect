@@ -1,14 +1,19 @@
-import { StyleSheet } from 'react-native';
+// app/(tabs)/index.tsx
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useAuth } from "@/context/AuthContext";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function HomeScreen(){
+  const { user } = useAuth();
 
-export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <View style={styles.header}>
+        <Text style={styles.username}>{user?.username || "Guest"}</Text>
+      </View>
+      <View style={styles.content}>
+        <Text style={styles.welcome}>Welcome to campus connect</Text>
+      </View>
     </View>
   );
 }
@@ -16,16 +21,27 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  header: {
+    backgroundColor: "#161D2B",
+    padding: 16,
+    alignItems: "flex-start",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  username: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FDC787",
+  },
+  content: {
+    flex: 1,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  welcome: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#333",
   },
 });

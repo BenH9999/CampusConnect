@@ -1,14 +1,16 @@
-import { StyleSheet } from 'react-native';
+// app/(tabs)/two.tsx
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
-
-export default function TabTwoScreen() {
+export default function OtherScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <View style={styles.header}>
+        <Text style={styles.title}>Other Tab</Text>
+      </View>
+      <View style={styles.content}>
+        <Text style={styles.text}>This is placeholder content for the other tab.</Text>
+      </View>
     </View>
   );
 }
@@ -16,16 +18,26 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  header: {
+    backgroundColor: "#161D2B",
+    padding: 16,
+    alignItems: "flex-start",
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FDC787",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  content: {
+    flex: 1,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  text: {
+    fontSize: 20,
+    color: "#333",
   },
 });

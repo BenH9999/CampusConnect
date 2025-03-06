@@ -1,8 +1,10 @@
 // app/auth/login.tsx
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
+
+import Header from "@/components/Header";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -32,21 +34,24 @@ export default function LoginScreen() {
         router.replace("/(tabs)");
       }
       else {
-        alert("Login Error" + data.error);
+        Alert.alert("Login Error", data.error || "An error occurred during login.");
       }
     } catch (error) {
         console.error("Login error: ", error);
-        alert("An error occurred, please try again");
+        Alert.alert("Login Error", "An error occurred. Please try again.");
     }
   };
 
   return (
     <View style={styles.container}>
+      <Header />
+
       <Text style={styles.title}>Login</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#161D2B"
         value={email}
         onChangeText={setEmail}
       />
@@ -54,6 +59,7 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#161D2B"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -82,10 +88,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#161D2B",
   },
   title: {
-    fontSize: 24,
-    marginBottom: 24,
+    fontSize: 64,
+    marginTop: 20,
+    marginBottom: 50,
     color: "#FDC787",
     textAlign: "center",
+    fontWeight: 800,
   },
   input: {
     backgroundColor: "#fff",
@@ -94,9 +102,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   loginText: {
-    marginTop: 16,
+    marginTop: 40,
     color: "#FDC787",
     textAlign: "center",
+    marginBottom: 200,
   },
   loginLink: {
     color: "#65B3C9",

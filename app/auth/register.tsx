@@ -1,8 +1,10 @@
 // app/auth/register.tsx
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
+
+import Header from "@/components/Header";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -34,21 +36,24 @@ export default function RegisterScreen() {
         router.replace("/(tabs)");
       }
       else {
-        alert("Registration error"+data.error);
+        Alert.alert("Registration Error", data.error || "An error occurred during registration.");
       }
     } catch (error) {
       console.error("Registration error: ", error);
-      alert("An error occurred, please try again");
+      Alert.alert("Registration Error", "An error occurred. Please try again.");
     }
   };
 
   return (
     <View style={styles.container}>
+      <Header />
+
       <Text style={styles.title}>Register</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Username"
+        placeholderTextColor="#161D2B"
         value={username}
         onChangeText={setUsername}
       />
@@ -56,6 +61,7 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#161D2B"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -64,6 +70,7 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#161D2B"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -92,21 +99,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#161D2B",
   },
   title: {
-    fontSize: 24,
+    fontSize: 64,
     marginBottom: 24,
     color: "#FDC787",
     textAlign: "center",
+    fontWeight: "800",
   },
   input: {
     backgroundColor: "#fff",
     padding: 12,
     marginVertical: 8,
     borderRadius: 8,
+    marginBottom: 10,
   },
   registerText: {
-    marginTop: 16,
+    marginTop: 40,
     color: "#FDC787",
     textAlign: "center",
+    marginBottom: 200,
   },
   registerLink: {
     color: "#65B3C9",
