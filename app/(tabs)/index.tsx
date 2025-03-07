@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#161D2B",
+    marginTop: 100,
     padding: 16,
     alignItems: "flex-start",
   },

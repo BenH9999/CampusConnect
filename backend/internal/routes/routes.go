@@ -1,18 +1,15 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
+    "net/http"
     "github.com/BenH9999/CampusConnect/backend/internal/handlers"
 )
 
-func SetupRouter() *gin.Engine {
-    router := gin.Default()
+func SetupRouter() http.Handler {
+    mux := http.NewServeMux()
 
-    api := router.Group("/api") 
-    {
-        api.POST("/register", handlers.Register)
-        api.POST("/login", handlers.Login)
-    }
+    mux.HandleFunc("/api/register", handlers.Register)
+    mux.HandleFunc("/api/login", handlers.Login)
 
-    return router
+    return mux
 }

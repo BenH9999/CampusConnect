@@ -12,8 +12,7 @@ export default function RegisterScreen() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
-  const { register } = useAuth();
+  const router = useRouter(); 
 
   const handleRegister = async () => {
     try {
@@ -29,22 +28,32 @@ export default function RegisterScreen() {
         }),
       }); 
 
-      const data = await response.json();
+      const responseText = await response.text();
+    console.log("Raw response:", responseText);
 
-      if(response.ok) {
-        await register(username,email,password);
-        router.replace("/(tabs)");
-      }
-      else {
-        Alert.alert("Registration Error", data.error || "An error occurred during registration.");
-      }
-    } catch (error) {
-      console.error("Registration error: ", error);
-      Alert.alert("Registration Error", "An error occurred. Please try again.");
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("JSON parsing error:", parseError);
+      throw new Error("Invalid JSON received from the server");
     }
-  };
 
-  return (
+    if (response.ok) { 
+      Alert.alert("Registration Successful", data.message, [
+        {
+          text: "OK",
+          onPress: () => router.replace("/auth/login"),
+        },
+      ]);
+    } else {
+      Alert.alert("Registration Error", data.error || "An error occurred during registration.");
+    }
+  } catch (error) {
+    console.error("Registration error: ", error);
+    Alert.alert("Registration Error", "An error occurred. Please try again.");
+  }
+};  return (
     <View style={styles.container}>
       <Header />
 

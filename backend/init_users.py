@@ -50,7 +50,7 @@ def main():
 
         # Insert placeholder users with hashed passwords.
         insert_query = """
-        INSERT INTO users (username, email, password_hash)
+        INSERT INTO users (username, email, password)
         VALUES (%s, %s, %s)
         ON CONFLICT (username) DO NOTHING;
         """

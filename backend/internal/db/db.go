@@ -2,24 +2,23 @@ package db
 
 import (
     "log"
+    "database/sql"
 
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+    _ "github.com/jackc/pgx/v5/stdlib"
 
     "github.com/BenH9999/CampusConnect/backend/internal/config"
-    "github.com/BenH9999/CampusConnect/backend/internal/models"
 )
 
-var DB *gorm.DB
+var DB *sql.DB
 
 func Connect() {
     var err error
-    DB, err = gorm.Open(postgres.Open(config.GetDatabaseURL()), &gorm.Config{})
+    DB, err = sql.Open("pgx", config.GetDatabaseURL())
     if err != nil {
         log.Fatal("Failed to connect to database:", err)
     }
 
-    err = DB.AutoMigrate(&models.User{})
+    err = DB.Ping()
     if err != nil {
         log.Fatal("Failed to migrate database:", err)
     }
