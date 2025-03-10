@@ -16,12 +16,12 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/login`,{
+      const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify ({
+        body: JSON.stringify({
           email,
           password,
         }),
@@ -29,7 +29,7 @@ export default function LoginScreen() {
 
       const data = await response.json();
 
-      if(response.ok){
+      if (response.ok) {
         await login(email, password);
         router.replace("/(tabs)");
       }
@@ -37,8 +37,8 @@ export default function LoginScreen() {
         Alert.alert("Login Error", data.error || "An error occurred during login.");
       }
     } catch (error) {
-        console.error("Login error: ", error);
-        Alert.alert("Login Error", "An error occurred. Please try again.");
+      console.error("Login error: ", error);
+      Alert.alert("Login Error", "An error occurred. Please try again.");
     }
   };
 
