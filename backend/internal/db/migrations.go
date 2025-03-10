@@ -84,7 +84,7 @@ func InitTables() {
 }
 
 func TempData() {
-	defaultPFP, err := os.ReadFile("assets/images/defaultpfp.png")
+	defaultPFP, err := os.ReadFile("../assets/images/defaultpfp.png")
 	if err != nil {
 		log.Println("Error reading default profile picture:", err)
 		defaultPFP = []byte{}
@@ -145,7 +145,7 @@ func TempData() {
 		log.Println("Error inserting like:", err)
 	}
 
-	_, err = DB.Exec(`INSERT INTO comments (post_id, username, conent) VALUES ($1, $2, $3)`, 2, "alice", "Nice post, Bob!")
+	_, err = DB.Exec(`INSERT INTO comments (post_id, username, content) VALUES ($1, $2, $3)`, 2, "alice", "Nice post, Bob!")
 	if err != nil {
 		log.Println("Error inserting comment:", err)
 	}
