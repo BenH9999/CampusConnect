@@ -11,8 +11,8 @@ import (
 
 func main() {
 	db.Connect()
-	db.InitTables()
-	db.TempData()
+	// db.InitTables()
+	// db.TempData()
 
 	router := routes.SetupRouter()
 

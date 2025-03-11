@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 export type User = {
   username: string;
   email: string;
+  display_name: string;
+  profile_picture: string;
 };
 
 type AuthContextType = {
@@ -21,7 +23,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      // Send a POST request to your login endpoint
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

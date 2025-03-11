@@ -1,14 +1,17 @@
 // app/(tabs)/index.tsx
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 
-export default function HomeScreen(){
+export default function HomeScreen() {
   const { user } = useAuth();
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {user?.profile_picture ? (
+          <Image source={{ uri: user.profile_picture }} style={styles.profilePic} />
+        ) : null}
         <Text style={styles.username}>{user?.username || "Guest"}</Text>
       </View>
       <View style={styles.content}>
@@ -27,6 +30,12 @@ const styles = StyleSheet.create({
     marginTop: 100,
     padding: 16,
     alignItems: "flex-start",
+  },
+  profilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
   },
   username: {
     fontSize: 18,

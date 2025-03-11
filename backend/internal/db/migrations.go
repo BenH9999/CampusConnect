@@ -116,7 +116,6 @@ func TempData() {
 			log.Println("Error inserting user", u.username, ":", err)
 		}
 	}
-	// dfasfsafsafsadfds
 
 	samplePosts := []struct {
 		username string
