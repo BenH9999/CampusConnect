@@ -1,22 +1,57 @@
 // app/(tabs)/index.tsx
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import Post, { PostProps } from "@/components/Post";
+import Header from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
+
+const BASE_URL = "http://192.168.0.5:8080";
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!user?.username) return;
+
+    const fetchFeed = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${BASE_URL}/api/feed?username=${encodeURIComponent(user.username)}`);
+        const data = await response.json();
+        setPosts(data);
+      } catch (err) {
+        console.error("error fetching feed", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeed();
+  }, [user?.username]);
+
+  if (!user) {
+    return (
+      <View style={styles.centered}>
+        <Text>Please log in to see your feed</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {user?.profile_picture ? (
-          <Image source={{ uri: user.profile_picture }} style={styles.profilePic} />
-        ) : null}
-        <Text style={styles.username}>{user?.username || "Guest"}</Text>
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.welcome}>Welcome to campus connect</Text>
-      </View>
+      <Header />
+      {loading ? (
+        <ActivityIndicator size="large" color="#FDC787" />
+      ) : (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <Post {...item} />}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
     </View>
   );
 }
@@ -24,10 +59,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#0F141E",
   },
   header: {
     backgroundColor: "#161D2B",
-    marginTop: 100,
+    marginTop: 5,
     padding: 16,
     alignItems: "flex-start",
   },
@@ -36,6 +72,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 8,
+  },
+  listContainer: {
+    paddingVertical: 8,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   username: {
     fontSize: 18,

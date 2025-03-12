@@ -5,7 +5,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
+	"os"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -33,14 +35,34 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	defaultPFP, err := os.ReadFile("../assets/images/defaultpfp.png")
+	if err != nil {
+		log.Println("Error reading default profile picture:", err)
+		defaultPFP = []byte{}
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 		return
 	}
 
-	query := `INSERT INTO users (username, email, password) VALUES ($1, $2, $3)`
-	_, err = db.DB.Exec(query, input.Username, input.Email, string(hash))
+	user := struct {
+		Username    string
+		Email       string
+		Password    string
+		DisplayName string
+		ProfilePic  []byte
+	}{
+		Username:    input.Username,
+		Email:       input.Email,
+		Password:    string(hash),
+		DisplayName: input.Username,
+		ProfilePic:  defaultPFP,
+	}
+
+	query := `INSERT INTO users (username, email, password, display_name, profile_picture) VALUES ($1, $2, $3, $4, $5)`
+	_, err = db.DB.Exec(query, user.Username, user.Email, user.Password, user.DisplayName, user.ProfilePic)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "Registration failed", http.StatusInternalServerError)

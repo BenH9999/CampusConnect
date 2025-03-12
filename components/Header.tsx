@@ -1,19 +1,43 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import ProfileButton from '@/components/ProfileButton';
+import { useAuth } from '@/context/AuthContext';
 
 const Header: React.FC = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Campus Connect</Text>
-    </View>
-  );
+  const { user } = useAuth();
+
+  if (user) {
+    return (
+      <View style={styles.loggedInContainer}>
+        <ProfileButton
+          username={user.username}
+          display_name={user.display_name}
+          profile_picture={user.profile_picture}
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.loggedOutContainer}>
+        <Text style={styles.title}>Campus Connect</Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
-  container: {
+  loggedInContainer: {
     width: "100%",
-    paddingVertical: 16,
     backgroundColor: "#161D2B",
+    paddingHorizontal: 16,
+    paddingVertical: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  loggedOutContainer: {
+    width: "100%",
+    backgroundColor: "#161D2B",
+    paddingVertical: 20,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -21,7 +45,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
     color: "#FDC787",
-    marginBottom: 100,
   },
 });
 
