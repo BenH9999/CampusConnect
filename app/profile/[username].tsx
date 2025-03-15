@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, Text, StyleSheet, Image, ActivityIndicator, FlatList, Pressable } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Post, { PostProps } from "@/components/Post";
+import { useAuth } from "@/context/AuthContext";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -32,6 +33,7 @@ type ProfileResponse = {
 const ProfileScreen = () => {
   const { username } = useLocalSearchParams<{ username: string }>();
   const router = useRouter();
+  const { user: loggedInUser } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -85,6 +87,8 @@ const ProfileScreen = () => {
     );
   }
 
+  const isOwnProfile = loggedInUser?.username === profile.username;
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Navigation Bar with Back Button */}
@@ -92,6 +96,14 @@ const ProfileScreen = () => {
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backText}>Back</Text>
         </Pressable>
+        {isOwnProfile && (
+          <Pressable
+            onPress={() => router.push(`/profile/${profile.username}/edit`)}
+            style={styles.editProfileButton}
+          >
+            <Text style={styles.editProfileText}>Edit Profile</Text>
+          </Pressable>
+        )}
       </View>
       {/* Profile Header */}
       <View style={styles.profileHeader}>
@@ -126,9 +138,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     backgroundColor: "#161D2B",
+    justifyContent: "space-between", // Space out the back button and edit button
   },
   backButton: {
-    // Customize as needed for touch target
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
@@ -137,8 +149,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
+  editProfileButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: "#FDC787",
+    borderRadius: 6,
+  },
+  editProfileText: {
+    color: "#161D2B",
+    fontWeight: "700",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#FDC787",
+    fontSize: 16,
+  },
   profileHeader: {
-    marginTop: 40, // Adjust to push content further down
+    marginTop: 40,
     alignItems: "center",
     paddingHorizontal: 20,
     backgroundColor: "#161D2B",
@@ -184,18 +215,6 @@ const styles = StyleSheet.create({
   },
   postsList: {
     padding: 16,
-  },
-  postWrapper: {
-    marginBottom: 12,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorText: {
-    color: "#FDC787",
-    fontSize: 16,
   },
 });
 

@@ -13,6 +13,7 @@ func SetupRouter() http.Handler {
 	mux.HandleFunc("/api/login", handlers.Login)
 	mux.HandleFunc("/api/feed", handlers.GetFeed)
 	mux.HandleFunc("/api/profile", handlers.GetUserProfile)
+	mux.HandleFunc("/api/profile/update", handlers.UpdateUserProfile)
 
 	return mux
 }
