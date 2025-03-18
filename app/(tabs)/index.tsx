@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import Post, { PostProps } from "@/components/Post";
 import Header from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
@@ -12,24 +12,23 @@ export default function HomeScreen() {
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const fetchFeed = useCallback(async () => {
     if (!user?.username) return;
-
-    const fetchFeed = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${BASE_URL}/api/feed?username=${encodeURIComponent(user.username)}`);
-        const data = await response.json();
-        setPosts(data);
-      } catch (err) {
-        console.error("error fetching feed", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeed();
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/api/feed?username=${encodeURIComponent(user.username)}`);
+      const data = await response.json();
+      setPosts(data);
+    } catch (err) {
+      console.error("error fetching feed", err);
+    } finally {
+      setLoading(false);
+    }
   }, [user?.username]);
+
+  useEffect(() => {
+    fetchFeed();
+  }, [fetchFeed]);
 
   if (!user) {
     return (
@@ -42,14 +41,21 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Header />
-      {loading ? (
-        <ActivityIndicator size="large" color="#FDC787" />
+      {loading && posts.length === 0 ? (
+        <ActivityIndicator size="large" color="#FDC787" style={styles.centered} />
       ) : (
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <Post {...item} />}
           contentContainerStyle={styles.listContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={fetchFeed}
+              tintColor="#FDC787"
+            />
+          }
         />
       )}
     </View>
