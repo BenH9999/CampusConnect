@@ -1,24 +1,25 @@
-// app/profile/[username]/edit.tsx 
-// fsfsf
+// app/profile/[username]/edit.tsx
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, TextInput, StyleSheet, Pressable, Alert, Platform } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
-
-const getMimeType = (uri: string): string => {
-  const lower = uri.toLowerCase();
-  if (lower.endsWith(".png")) return "image/png";
-  if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
-  return "image/jpeg";
-};
 
 const BASE_URL = "http://192.168.0.5:8080";
 
 export default function EditProfileScreen() {
   const { username } = useLocalSearchParams<{ username: string }>();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const [displayName, setDisplayName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
@@ -29,6 +30,9 @@ export default function EditProfileScreen() {
       Alert.alert("Unauthorized", "You can only edit your own profile.", [
         { text: "OK", onPress: () => router.back() },
       ]);
+    } else {
+      setDisplayName(user.display_name);
+      setProfilePicture(user.profile_picture);
     }
   }, [username, user]);
 
@@ -49,6 +53,13 @@ export default function EditProfileScreen() {
       }
     })();
   }, []);
+
+  const getMimeType = (uri: string): string => {
+    const lower = uri.toLowerCase();
+    if (lower.endsWith(".png")) return "image/png";
+    if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+    return "image/jpeg";
+  };
 
   const pickProfilePicture = () => {
     Alert.alert("Change Profile Picture", "Select an option:", [
@@ -108,6 +119,13 @@ export default function EditProfileScreen() {
         const errorText = await response.text();
         throw new Error(errorText);
       }
+
+      updateUser({
+        username,
+        email: user!.email,
+        display_name: displayName,
+        profile_picture: profilePicture,
+      });
       Alert.alert("Success", "Profile updated.", [
         { text: "OK", onPress: () => router.back() },
       ]);
@@ -128,6 +146,7 @@ export default function EditProfileScreen() {
         </Pressable>
         <Text style={styles.navTitle}>Edit Profile</Text>
       </View>
+
       <View style={styles.form}>
         <Text style={styles.label}>Display Name</Text>
         <TextInput
@@ -148,11 +167,7 @@ export default function EditProfileScreen() {
           </Text>
         ) : null}
 
-        <Pressable
-          onPress={handleSave}
-          style={styles.saveButton}
-          disabled={loading}
-        >
+        <Pressable onPress={handleSave} style={styles.saveButton} disabled={loading}>
           <Text style={styles.saveText}>
             {loading ? "Saving..." : "Save Changes"}
           </Text>
@@ -186,7 +201,7 @@ const styles = StyleSheet.create({
     color: "#FDC787",
     fontSize: 18,
     fontWeight: "700",
-    marginRight: 40, // Offset for the back button
+    marginRight: 40,
   },
   form: {
     padding: 16,

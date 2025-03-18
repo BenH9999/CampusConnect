@@ -56,6 +56,11 @@ export default function HomeScreen() {
               tintColor="#FDC787"
             />
           }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No posts to show.</Text>
+            </View>
+          }
         />
       )}
     </View>
@@ -104,4 +109,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#333",
   },
+  emptyContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#FDC787",
+    fontSize: 16,
+  },
+
 });

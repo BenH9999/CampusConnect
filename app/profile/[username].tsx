@@ -187,6 +187,11 @@ const ProfileScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <Post {...item} />}
         contentContainerStyle={styles.postsList}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No posts to show.</Text>
+          </View>
+        }
       />
     </SafeAreaView>
   );
@@ -304,6 +309,14 @@ const styles = StyleSheet.create({
   },
   postsList: {
     padding: 16,
+  },
+  emptyContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#FDC787",
+    fontSize: 16,
   },
 });
 
