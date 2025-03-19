@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from "react-native";
+import { SafeAreaView, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import Post, { PostProps } from "@/components/Post";
 import Header from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
@@ -18,7 +18,8 @@ export default function HomeScreen() {
     try {
       const response = await fetch(`${BASE_URL}/api/feed?username=${encodeURIComponent(user.username)}`);
       const data = await response.json();
-      setPosts(data);
+      const feedData = Array.isArray(data) ? data : [];
+      setPosts(feedData);
     } catch (err) {
       console.error("error fetching feed", err);
     } finally {
@@ -32,15 +33,15 @@ export default function HomeScreen() {
 
   if (!user) {
     return (
-      <View style={styles.centered}>
+      <SafeAreaView style={styles.centered}>
         <Text>Please log in to see your feed</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Header />
+    <SafeAreaView style={styles.container}>
+      <Header showSearch={true} />
       {loading && posts.length === 0 ? (
         <ActivityIndicator size="large" color="#FDC787" style={styles.centered} />
       ) : (
@@ -57,13 +58,13 @@ export default function HomeScreen() {
             />
           }
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
+            <SafeAreaView style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No posts to show.</Text>
-            </View>
+            </SafeAreaView>
           }
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -16,6 +16,7 @@ func SetupRouter() http.Handler {
 	mux.HandleFunc("/api/profile/update", handlers.UpdateUserProfile)
 	mux.HandleFunc("/api/follow/status", handlers.GetFollowStatus)
 	mux.HandleFunc("/api/follow/toggle", handlers.ToggleFollow)
+	mux.HandleFunc("/api/search/users", handlers.SearchUsers)
 
 	return mux
 }

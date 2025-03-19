@@ -53,8 +53,9 @@ const ProfileScreen = () => {
       );
       if (!res.ok) throw new Error("Failed to fetch profile");
       const data: ProfileResponse = await res.json();
+      const postsData = Array.isArray(data.posts) ? data.posts : [];
       setProfile(data.user);
-      const mappedPosts: PostProps[] = data.posts.map((p) => ({
+      const mappedPosts: PostProps[] = postsData.map((p) => ({
         id: p.id,
         content: p.content,
         createdAt: p.created_at,
