@@ -17,6 +17,9 @@ func SetupRouter() http.Handler {
 	mux.HandleFunc("/api/follow/status", handlers.GetFollowStatus)
 	mux.HandleFunc("/api/follow/toggle", handlers.ToggleFollow)
 	mux.HandleFunc("/api/search/users", handlers.SearchUsers)
+	mux.HandleFunc("/api/posts/create", handlers.CreatePost)
+	mux.HandleFunc("/api/posts/view", handlers.ViewPost)
+	mux.HandleFunc("/api/comments/create", handlers.CreateComment)
 
 	return mux
 }

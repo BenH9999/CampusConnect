@@ -1,6 +1,6 @@
 # TODO FOR APP
 
-## 19-03-2025
+## MVP
 
 - [x] Add search page for finding users.
 - [ ] Add a page for creating posts

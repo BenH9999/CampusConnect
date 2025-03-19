@@ -1,7 +1,8 @@
 // app/search/index.tsx
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Image, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, Pressable } from "react-native";
+import { SafeAreaView, View, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import ProfileButton from "@/components/ProfileButton";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -64,17 +65,11 @@ export default function SearchScreen() {
           data={results}
           keyExtractor={(item) => item.username}
           renderItem={({ item }) => (
-            <Pressable onPress={() => router.push(`/profile/${item.username}`)} style={styles.resultItem}>
-              {item.profile_picture ? (
-                <Image source={{ uri: item.profile_picture }} style={styles.resultPic} />
-              ) : (
-                <View style={styles.resultPicPlaceholder} />
-              )}
-              <View style={styles.resultTextContainer}>
-                <Text style={styles.resultDisplayName}>{item.display_name}</Text>
-                <Text style={styles.resultUsername}>@{item.username}</Text>
-              </View>
-            </Pressable>
+            <ProfileButton
+              username={item.username}
+              display_name={item.display_name}
+              profile_picture={item.profile_picture}
+            />
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
