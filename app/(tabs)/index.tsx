@@ -1,6 +1,7 @@
 // app/(tabs)/index.tsx
 import React, { useCallback, useEffect, useState } from "react";
-import { SafeAreaView, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import Post, { PostProps } from "@/components/Post";
 import Header from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
@@ -9,6 +10,7 @@ const BASE_URL = "http://192.168.0.5:8080";
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const router = useRouter();
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -42,6 +44,11 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Header showSearch={true} />
+      <View style={styles.newPostContainer}>
+        <Pressable onPress={() => router.push("/post/write")} style={styles.newPostButton}>
+          <Text style={styles.newPostText}>New Post</Text>
+        </Pressable>
+      </View>
       {loading && posts.length === 0 ? (
         <ActivityIndicator size="large" color="#FDC787" style={styles.centered} />
       ) : (
@@ -69,54 +76,29 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0F141E",
-  },
-  header: {
-    backgroundColor: "#161D2B",
-    marginTop: 5,
-    padding: 16,
-    alignItems: "flex-start",
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  listContainer: {
-    paddingVertical: 8,
-  },
   centered: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  username: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: "#FDC787",
+  container: { flex: 1, backgroundColor: "#0F141E" },
+  newPostContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: "#161D2B",
   },
-  content: {
-    flex: 1,
-    padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+  newPostButton: {
+    alignSelf: "flex-end",
+    backgroundColor: "#FDC787",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
   },
-  welcome: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "#333",
+  newPostText: {
+    color: "#161D2B",
+    fontWeight: "700",
   },
-  emptyContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  emptyText: {
-    color: "#FDC787",
-    fontSize: 16,
-  },
-
+  listContainer: { paddingVertical: 8 },
+  emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
+  emptyText: { color: "#FDC787", fontSize: 16 },
 });

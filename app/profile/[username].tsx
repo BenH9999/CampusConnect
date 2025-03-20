@@ -154,6 +154,9 @@ const ProfileScreen = () => {
             <Pressable onPress={logout} style={styles.logoutButton}>
               <Text style={styles.logoutText}>Logout</Text>
             </Pressable>
+            <Pressable onPress={() => router.push("/post/write")} style={styles.newPostButton}>
+              <Text style={styles.newPostText}>New Post</Text>
+            </Pressable>
           </View>
         ) : (
           <Pressable
@@ -319,6 +322,8 @@ const styles = StyleSheet.create({
     color: "#FDC787",
     fontSize: 16,
   },
+  newPostButton: { alignSelf: "flex-end", backgroundColor: "#FDC787", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6 },
+  newPostText: { color: "#161D2B", fontWeight: "700" },
 });
 
 export default ProfileScreen;

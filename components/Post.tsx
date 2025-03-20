@@ -1,6 +1,7 @@
 // components/Post.tsx
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import ProfileButton from "@/components/ProfileButton";
 
 export type PostProps = {
@@ -15,6 +16,7 @@ export type PostProps = {
 };
 
 const Post: React.FC<PostProps> = ({
+  id,
   username,
   display_name,
   profile_picture,
@@ -22,6 +24,13 @@ const Post: React.FC<PostProps> = ({
   likes_count = 0,
   comments_count = 0,
 }) => {
+
+  const router = useRouter();
+
+  const handlePostPress = () => {
+    router.push(`/post/${id}`);
+  };
+
   return (
     <View style={styles.postContainer}>
       <Pressable onPress={() => { /* Navigate via ProfileButton logic inside it */ }}>
@@ -31,13 +40,15 @@ const Post: React.FC<PostProps> = ({
           profile_picture={profile_picture}
         />
       </Pressable>
-      <View style={styles.content}>
-        <Text style={styles.contentText}>{content}</Text>
-      </View>
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Likes: {likes_count}</Text>
-        <Text style={styles.footerText}>Comments: {comments_count}</Text>
-      </View>
+      <Pressable onPress={handlePostPress}>
+        <View style={styles.content}>
+          <Text style={styles.contentText}>{content}</Text>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Likes: {likes_count}</Text>
+          <Text style={styles.footerText}>Comments: {comments_count}</Text>
+        </View>
+      </Pressable>
     </View>
   );
 };
