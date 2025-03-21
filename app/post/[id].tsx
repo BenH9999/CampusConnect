@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
+import ProfileButton from "@/components/ProfileButton";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -119,6 +120,11 @@ export default function ViewPostScreen() {
         </Pressable>
       </View>
       <View style={styles.contentContainer}>
+        <ProfileButton
+          username={post.username}
+          display_name={post.display_name}
+          profile_picture={post.profile_picture}
+        />
         <Text style={styles.postContent}>{post.content}</Text>
         <Text style={styles.postInfo}>
           Posted by {post.display_name} (@{post.username}) on {new Date(post.created_at).toLocaleString()}

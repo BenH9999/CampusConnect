@@ -1,14 +1,11 @@
 package config
 
-import "fmt"
+import "os"
 
 func GetDatabaseURL() string {
-    host := "localhost"
-    port := 5432
-    user := "bennh"
-    password := "houghton"
-    dbname := "campusconnect"
-    sslmode := "disable"
+	if url := os.Getenv("DATABASE_URL"); url != "" {
+		return url
+	}
 
-    return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
+	return "postgres://bennh:your_password@localhost:5432/campusconnect?sslmode=disable"
 }
