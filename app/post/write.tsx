@@ -1,3 +1,4 @@
+// app/post/write.tsx
 import React, { useState } from "react";
 import {
   SafeAreaView,
