@@ -44,6 +44,16 @@ const ProfileScreen = () => {
 
   const isOwnProfile = loggedInUser?.username === profile?.username;
 
+  const handlePostLikeUpdate = useCallback((postId: number, newLikeCount: number, isLiked: boolean) => {
+    setPosts(currentPosts => 
+      currentPosts.map(post => 
+        post.id === postId 
+          ? {...post, likes_count: newLikeCount, isLiked: isLiked} 
+          : post
+      )
+    );
+  }, []);
+
   const fetchProfileData = useCallback(async () => {
     if (!username) return;
     try {
@@ -175,9 +185,21 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.profileHeader}>
         {profile.profile_picture ? (
-          <Image source={{ uri: profile.profile_picture }} style={styles.profilePic} />
+          <Image 
+            source={{ 
+              uri: profile.profile_picture.startsWith('data:') 
+                ? profile.profile_picture 
+                : `data:image/png;base64,${profile.profile_picture}` 
+            }} 
+            style={styles.profilePic}
+            onError={() => console.log(`Failed to load profile image for ${profile.username}`)}
+          />
         ) : (
-          <View style={styles.profilePicPlaceholder} />
+          <View style={styles.profilePicPlaceholder}>
+            <Text style={styles.placeholderText}>
+              {profile.display_name.charAt(0).toUpperCase()}
+            </Text>
+          </View>
         )}
         <Text style={styles.displayName}>{profile.display_name}</Text>
         <Text style={styles.username}>@{profile.username}</Text>
@@ -189,7 +211,12 @@ const ProfileScreen = () => {
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Post {...item} />}
+        renderItem={({ item }) => (
+          <Post 
+            {...item} 
+            onLikeUpdate={handlePostLikeUpdate}
+          />
+        )}
         contentContainerStyle={styles.postsList}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
@@ -273,18 +300,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#161D2B",
     paddingBottom: 20,
   },
-  profilePic: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
-  },
-  profilePicPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  profilePic: { width: 100, height: 100, borderRadius: 50 },
+  profilePicPlaceholder: { 
+    width: 100, 
+    height: 100, 
+    borderRadius: 50, 
     backgroundColor: "#444",
-    marginBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    color: "#FDC787",
+    fontSize: 32,
+    fontWeight: "bold",
   },
   displayName: {
     fontSize: 22,

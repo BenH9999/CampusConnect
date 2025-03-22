@@ -17,6 +17,10 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// When running with Docker, use the appropriate IP based on your setup:
+// For iOS simulator: localhost or 127.0.0.1
+// For Android Emulator: 10.0.2.2 (emulator's route to host loopback)
+// For physical device: Use your computer's actual IP address on the network
 const BASE_URL = "http://192.168.0.5:8080";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

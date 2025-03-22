@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/BenH9999/CampusConnect/backend/internal/db"
+	"github.com/BenH9999/CampusConnect/backend/internal/utils"
 )
 
 type FollowStatusResponse struct {
@@ -75,6 +76,9 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// Create a follow notification - only when a new follow happens, not on unfollow
+		utils.CreateFollowNotification(req.Following, req.Follower)
 	}
 
 	var newCount int

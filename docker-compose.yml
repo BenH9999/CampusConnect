@@ -1,27 +1,46 @@
-version: "3.8"
+version: '3.8'
+
 services:
-  db:
-    image: postgres:14
-    container_name: campusconnect_db
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: campusconnect-db
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-campusconnect}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - campusconnect-network
 
+  # Backend API
   backend:
-    build: ./backend
-    container_name: campusconnect_backend
-    environment:
-      - PORT=8080
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campusconnect-api
     ports:
-      - "8080:8080"
+      - "${API_PORT:-8080}:8080"
     depends_on:
-      - db
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-campusconnect}
+    restart: unless-stopped
+    networks:
+      - campusconnect-network
 
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  campusconnect-network:
+    driver: bridge

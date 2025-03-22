@@ -8,11 +8,13 @@ import {
   FlatList,
   TextInput,
   Pressable,
+  TouchableOpacity,
   Image,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import ProfileButton from "@/components/ProfileButton";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const BASE_URL = "http://192.168.0.5:8080";
 
@@ -51,6 +53,9 @@ export default function ViewPostScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [commentText, setCommentText] = useState("");
   const [postingComment, setPostingComment] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [likeLoading, setLikeLoading] = useState(false);
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -60,6 +65,7 @@ export default function ViewPostScreen() {
         if (!res.ok) throw new Error("Failed to fetch post");
         const data: ViewPostResponse = await res.json();
         setPost(data.post);
+        setLikeCount(data.post.likes_count);
         // Ensure comments defaults to an empty array if none
         setComments(data.comments || []);
       } catch (err) {
@@ -70,6 +76,32 @@ export default function ViewPostScreen() {
     };
     fetchPostDetails();
   }, [id]);
+
+  const handleLike = async () => {
+    if (!user || !post || likeLoading) return;
+    
+    setLikeLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/api/posts/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          post_id: post.id,
+          username: user.username 
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setLikeCount(data.count);
+        setIsLiked(data.is_liked);
+      }
+    } catch (error) {
+      console.error('Error liking post:', error);
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
   const handleComment = async () => {
     if (!commentText.trim()) return;
@@ -129,6 +161,23 @@ export default function ViewPostScreen() {
         <Text style={styles.postInfo}>
           Posted by {post.display_name} (@{post.username}) on {new Date(post.created_at).toLocaleString()}
         </Text>
+        
+        {/* Like Button */}
+        <View style={styles.postActions}>
+          <TouchableOpacity 
+            style={styles.likeButton} 
+            onPress={handleLike}
+            disabled={likeLoading}
+          >
+            <FontAwesome 
+              name={isLiked ? "heart" : "heart-o"} 
+              size={22} 
+              color={isLiked ? "#FDC787" : "#F5F5F5"} 
+            />
+            <Text style={styles.likeText}>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</Text>
+          </TouchableOpacity>
+        </View>
+        
         <View style={styles.separator} />
         <Text style={styles.commentsTitle}>Comments</Text>
         <FlatList
@@ -187,6 +236,21 @@ const styles = StyleSheet.create({
   contentContainer: { padding: 16 },
   postContent: { fontSize: 18, color: "#F5F5F5", marginBottom: 8 },
   postInfo: { fontSize: 14, color: "#ccc", marginBottom: 16 },
+  postActions: {
+    flexDirection: "row",
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  likeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 8,
+  },
+  likeText: {
+    color: "#F5F5F5",
+    marginLeft: 8,
+    fontSize: 16,
+  },
   separator: { borderBottomWidth: 1, borderBottomColor: "#2A3346", marginBottom: 16 },
   commentsTitle: { fontSize: 18, color: "#FDC787", fontWeight: "700", marginBottom: 8 },
   commentsList: { paddingBottom: 16 },
