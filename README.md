@@ -35,7 +35,7 @@ The easiest way to get the application running is to use Docker Compose, which w
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/CampusConnect.git
+git clone https://github.com/BenH9999/CampusConnect.git
 cd CampusConnect
 ```
 
