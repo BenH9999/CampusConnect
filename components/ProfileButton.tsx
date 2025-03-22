@@ -31,16 +31,10 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({
       );
     }
 
-    // Check if it's already a data URI
-    const imageUri = profile_picture.startsWith('data:')
-      ? profile_picture
-      : `data:image/png;base64,${profile_picture}`;
-
     return (
       <Image
-        source={{ uri: imageUri }}
+        source={{ uri: profile_picture }}
         style={styles.profilePic}
-        onError={() => console.log(`Failed to load profile image for ${username}`)}
       />
     );
   };

@@ -1,4 +1,4 @@
-// app/(tabs)/two.tsx
+// app/(tabs)/notifications.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Pressable, RefreshControl, SafeAreaView } from "react-native";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,13 @@ export default function NotificationsScreen() {
     try {
       const response = await fetch(`${BASE_URL}/api/notifications?username=${encodeURIComponent(user.username)}`);
       const data = await response.json();
+      
+      // Debug logging
+      console.log("Notifications data:", JSON.stringify(data, null, 2));
+      if (data && data.length > 0) {
+        console.log("First notification profile picture:", data[0].sender_profile_picture);
+      }
+      
       setNotifications(data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -147,4 +154,4 @@ const styles = StyleSheet.create({
     color: "#A0A0A0",
     fontSize: 16,
   },
-});
+}); 

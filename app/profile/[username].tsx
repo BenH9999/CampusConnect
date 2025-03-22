@@ -186,13 +186,8 @@ const ProfileScreen = () => {
       <View style={styles.profileHeader}>
         {profile.profile_picture ? (
           <Image 
-            source={{ 
-              uri: profile.profile_picture.startsWith('data:') 
-                ? profile.profile_picture 
-                : `data:image/png;base64,${profile.profile_picture}` 
-            }} 
+            source={{ uri: profile.profile_picture }} 
             style={styles.profilePic}
-            onError={() => console.log(`Failed to load profile image for ${profile.username}`)}
           />
         ) : (
           <View style={styles.profilePicPlaceholder}>

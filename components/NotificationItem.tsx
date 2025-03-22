@@ -73,30 +73,20 @@ export default function NotificationItem({
     }
   };
 
-  const renderProfileImage = () => {
-    if (!sender_profile_picture) {
-      return (
-        <View style={[styles.profileImage, styles.profileImagePlaceholder]}>
-          <Text style={styles.profileImagePlaceholderText}>
-            {sender_display_name.charAt(0).toUpperCase()}
-          </Text>
-        </View>
-      );
+  // Format profile picture URI
+  const getProfilePictureUri = () => {
+    if (!sender_profile_picture) return null;
+    
+    // Check if the URI already has the data prefix
+    if (sender_profile_picture.startsWith('data:')) {
+      return sender_profile_picture;
     }
-
-    // Check if it's already a data URI
-    const imageUri = sender_profile_picture.startsWith('data:')
-      ? sender_profile_picture
-      : `data:image/png;base64,${sender_profile_picture}`;
-
-    return (
-      <Image 
-        source={{ uri: imageUri }} 
-        style={styles.profileImage}
-        onError={() => console.log(`Failed to load notification image for ${sender_name}`)}
-      />
-    );
+    
+    // Add the data URI prefix if it's missing
+    return `data:image/png;base64,${sender_profile_picture}`;
   };
+
+  const profilePictureUri = getProfilePictureUri();
 
   return (
     <TouchableOpacity
@@ -106,9 +96,23 @@ export default function NotificationItem({
       <View style={styles.iconContainer}>
         {getIcon()}
       </View>
+
+      {/* Profile Picture - with proper data URI handling */}
       <View style={styles.profileImageContainer}>
-        {renderProfileImage()}
+        {profilePictureUri ? (
+          <Image 
+            source={{ uri: profilePictureUri }}
+            style={styles.profileImage}
+          />
+        ) : (
+          <View style={[styles.profileImage, styles.profileImagePlaceholder]}>
+            <Text style={styles.profileImagePlaceholderText}>
+              {sender_display_name.charAt(0).toUpperCase()}
+            </Text>
+          </View>
+        )}
       </View>
+
       <View style={styles.content}>
         <Text style={styles.message}>
           <Text style={styles.name}>{sender_display_name}</Text> {message}
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImagePlaceholderText: {
-    color: '#A0A0A0',
+    color: '#FDC787',
     fontSize: 16,
     fontWeight: '600',
   },
