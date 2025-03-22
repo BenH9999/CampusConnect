@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/BenH9999/CampusConnect/backend/internal/db"
+	"github.com/BenH9999/CampusConnect/backend/internal/utils"
 )
 
 type CreateCommentInput struct {
@@ -43,6 +44,9 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Create notification for post owner
+	utils.CreateCommentNotification(input.PostID, input.Username)
 
 	response := CommentResponse{
 		ID:        id,

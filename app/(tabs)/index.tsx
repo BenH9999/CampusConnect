@@ -14,6 +14,16 @@ export default function HomeScreen() {
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const handlePostLikeUpdate = useCallback((postId: number, newLikeCount: number, isLiked: boolean) => {
+    setPosts(currentPosts => 
+      currentPosts.map(post => 
+        post.id === postId 
+          ? {...post, likes_count: newLikeCount, isLiked: isLiked} 
+          : post
+      )
+    );
+  }, []);
+
   const fetchFeed = useCallback(async () => {
     if (!user?.username) return;
     setLoading(true);
@@ -55,7 +65,7 @@ export default function HomeScreen() {
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <Post {...item} />}
+          renderItem={({ item }) => <Post {...item} onLikeUpdate={handlePostLikeUpdate} />}
           contentContainerStyle={styles.listContainer}
           refreshControl={
             <RefreshControl

@@ -19,7 +19,15 @@ func SetupRouter() http.Handler {
 	mux.HandleFunc("/api/search/users", handlers.SearchUsers)
 	mux.HandleFunc("/api/posts/create", handlers.CreatePost)
 	mux.HandleFunc("/api/posts/view", handlers.ViewPost)
+	mux.HandleFunc("/api/posts/like", handlers.ToggleLike)
+	mux.HandleFunc("/api/posts/like/status", handlers.CheckLikeStatus)
 	mux.HandleFunc("/api/comments/create", handlers.CreateComment)
+
+	// Notification endpoints
+	mux.HandleFunc("/api/notifications", handlers.GetNotifications)
+	mux.HandleFunc("/api/notifications/read", handlers.MarkNotificationRead)
+	mux.HandleFunc("/api/notifications/read-all", handlers.MarkAllNotificationsRead)
+	mux.HandleFunc("/api/notifications/unread-count", handlers.GetUnreadCount)
 
 	return mux
 }

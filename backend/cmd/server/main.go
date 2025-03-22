@@ -10,10 +10,14 @@ import (
 )
 
 func main() {
+	// Connect to the database
 	db.Connect()
-	// db.InitTables()
-	// db.TempData()
 
+	// Initialize database tables and sample data
+	db.InitTables()
+	db.TempData()
+
+	// Set up the router
 	router := routes.SetupRouter()
 
 	port := os.Getenv("PORT")
@@ -21,9 +25,9 @@ func main() {
 		port = "8080"
 	}
 
-	log.Println("Server running on 192.168.0.5:", port)
+	log.Println("Server running on port:", port)
 
-	err := http.ListenAndServe("192.168.0.5:"+port, router)
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		log.Fatal("Server error: ", err)
 	}

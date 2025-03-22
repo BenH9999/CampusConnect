@@ -1,30 +1,38 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import ProfileButton from '@/components/ProfileButton';
 import { useAuth } from '@/context/AuthContext';
 
 type HeaderProps = {
   showSearch?: boolean;
+  title?: string;
 };
 
-const Header: React.FC<HeaderProps> = ({ showSearch }) => {
+const Header: React.FC<HeaderProps> = ({ showSearch, title }) => {
   const { user } = useAuth();
   const router = useRouter();
+
+  // If title is provided, show a title-only header
+  if (title) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       {user ? (
         <View style={styles.loggedInRow}>
           {/* Left: Profile Button */}
-          <Pressable onPress={() => router.push(`/profile/${user.username}`)} style={styles.profileContainer}>
-            {user.profile_picture ? (
-              <Image source={{ uri: user.profile_picture }} style={styles.profilePic} />
-            ) : (
-              <View style={styles.profilePicPlaceholder} />
-            )}
-            <Text style={styles.username}>{user.display_name || user.username}</Text>
-          </Pressable>
+          <ProfileButton 
+            username={user.username}
+            display_name={user.display_name}
+            profile_picture={user.profile_picture}
+          />
+          
           {/* Right: Optional Search Button */}
           {showSearch && (
             <Pressable onPress={() => router.push("/search")} style={styles.searchButton}>
@@ -52,27 +60,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  profilePicPlaceholder: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#444",
-  },
-  username: {
-    color: "#FDC787",
-    fontSize: 16,
-    fontWeight: "800",
-    marginLeft: 8,
   },
   searchButton: {
     paddingVertical: 4,

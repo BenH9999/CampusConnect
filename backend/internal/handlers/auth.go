@@ -35,9 +35,31 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defaultPFP, err := os.ReadFile("../assets/images/defaultpfp.png")
+	// Try multiple possible paths for the default profile picture
+	imagePaths := []string{
+		"/root/assets/images/defaultpfp.png",
+		"assets/images/defaultpfp.png",
+		"/app/assets/images/defaultpfp.png",
+		"../assets/images/defaultpfp.png",
+		"../../assets/images/defaultpfp.png",
+		"backend/assets/images/defaultpfp.png",
+		"/home/bennh/work/uni/app_dev/CampusConnect/assets/images/defaultpfp.png",
+	}
+
+	var defaultPFP []byte
+
+	for _, path := range imagePaths {
+		defaultPFP, err = os.ReadFile(path)
+		if err == nil {
+			log.Printf("Successfully loaded profile picture from: %s", path)
+			break
+		} else {
+			log.Printf("Failed to load profile picture from: %s - %v", path, err)
+		}
+	}
+
 	if err != nil {
-		log.Println("Error reading default profile picture:", err)
+		log.Println("Could not load default profile picture, using empty image")
 		defaultPFP = []byte{}
 	}
 
@@ -72,10 +94,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := struct {
-		Message string `json:"message"`
-	}{
-		Message: "User created successfully",
+	var imageData string
+	if len(user.ProfilePic) > 0 {
+		encodedPFP := base64.StdEncoding.EncodeToString(user.ProfilePic)
+		imageData = "data:image/png;base64," + encodedPFP
+	} else {
+		imageData = ""
+	}
+
+	response := map[string]string{
+		"username":        user.Username,
+		"email":           user.Email,
+		"display_name":    user.DisplayName,
+		"profile_picture": imageData,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -111,8 +142,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	encodedPFP := base64.StdEncoding.EncodeToString(user.ProfilePicture)
-	imageData := "data:image/png;base64," + encodedPFP
+	var imageData string
+	if len(user.ProfilePicture) > 0 {
+		encodedPFP := base64.StdEncoding.EncodeToString(user.ProfilePicture)
+		imageData = "data:image/png;base64," + encodedPFP
+	} else {
+		imageData = ""
+	}
 
 	response := map[string]string{
 		"username":        user.Username,
