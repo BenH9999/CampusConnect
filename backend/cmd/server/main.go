@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,10 +16,12 @@ func main() {
 
 	// Initialize database tables and sample data
 	db.InitTables()
-	db.TempData()
 
 	// Set up the router
 	router := routes.SetupRouter()
+
+	// Log the setup of the unread messages count endpoint
+	fmt.Println("Registering endpoint: /api/messages/unread-count")
 
 	port := os.Getenv("PORT")
 	if port == "" {
