@@ -4,8 +4,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Pressable, Refresh
 import { useAuth } from "@/context/AuthContext";
 import NotificationItem, { NotificationProps } from "@/components/NotificationItem";
 import Header from "@/components/Header";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 export default function NotificationsScreen() {
   const { user } = useAuth();

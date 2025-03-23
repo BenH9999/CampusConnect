@@ -2,11 +2,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../../context/AuthContext";
 
 import Header from "@/components/Header";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");

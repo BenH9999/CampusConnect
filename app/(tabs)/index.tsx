@@ -5,8 +5,7 @@ import { useRouter } from "expo-router";
 import Post, { PostProps } from "@/components/Post";
 import Header from "@/components/Header";
 import { useAuth } from "@/context/AuthContext";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 export default function HomeScreen() {
   const { user } = useAuth();
