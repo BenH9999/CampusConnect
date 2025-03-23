@@ -1,27 +1,43 @@
 package db
 
 import (
-    "log"
-    "database/sql"
+	"database/sql"
+	"log"
+	"time"
 
-    _ "github.com/jackc/pgx/v5/stdlib"
+	_ "github.com/jackc/pgx/v5/stdlib"
 
-    "github.com/BenH9999/CampusConnect/backend/internal/config"
+	"github.com/BenH9999/CampusConnect/backend/internal/config"
 )
 
 var DB *sql.DB
 
+// Connect establishes a connection to the database with retry logic
 func Connect() {
-    var err error
-    DB, err = sql.Open("pgx", config.GetDatabaseURL())
-    if err != nil {
-        log.Fatal("Failed to connect to database:", err)
-    }
+	var err error
+	var retries int = 5
+	var retryDelay time.Duration = 5 * time.Second
 
-    err = DB.Ping()
-    if err != nil {
-        log.Fatal("Failed to migrate database:", err)
-    }
+	for i := 0; i < retries; i++ {
+		log.Printf("Attempting database connection (attempt %d/%d)...", i+1, retries)
 
-    log.Println("Database connected and migrated successfully")
+		DB, err = sql.Open("pgx", config.GetDatabaseURL())
+		if err == nil {
+			// Try pinging the database to verify connection
+			err = DB.Ping()
+			if err == nil {
+				log.Println("Database connected successfully")
+				return
+			}
+		}
+
+		log.Printf("Failed to connect to database: %v", err)
+
+		if i < retries-1 {
+			log.Printf("Retrying in %v...", retryDelay)
+			time.Sleep(retryDelay)
+		}
+	}
+
+	log.Fatal("Failed to connect to database after multiple attempts:", err)
 }

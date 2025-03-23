@@ -16,7 +16,6 @@ import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BASE_URL } from "@/constants/api";
-import ProfileButton from "@/components/ProfileButton";
 
 type Message = {
   id: number;
