@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { BASE_URL } from "@/constants/api";
 
 export type User = {
   username: string;
@@ -16,9 +17,6 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Using the IP address that matches your local network
-const BASE_URL = "http://192.168.0.5:8080";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
