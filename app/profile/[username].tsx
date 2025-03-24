@@ -4,8 +4,8 @@ import { SafeAreaView, View, Text, StyleSheet, Image, ActivityIndicator, FlatLis
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Post, { PostProps } from "@/components/Post";
 import { useAuth } from "@/context/AuthContext";
+import { BASE_URL } from "@/constants/api";
 
-const BASE_URL = "http://192.168.0.5:8080";
 
 type ProfileData = {
   username: string;

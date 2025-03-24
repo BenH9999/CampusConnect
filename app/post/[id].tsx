@@ -16,8 +16,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import ProfileButton from "@/components/ProfileButton";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 type PostDetail = {
   id: number;

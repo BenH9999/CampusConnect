@@ -13,8 +13,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 export default function EditProfileScreen() {
   const { username } = useLocalSearchParams<{ username: string }>();

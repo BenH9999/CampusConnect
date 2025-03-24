@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import ProfileButton from "@/components/ProfileButton";
-
-const BASE_URL = "http://192.168.0.5:8080";
+import { BASE_URL } from "@/constants/api";
 
 type UserResult = {
   username: string;
