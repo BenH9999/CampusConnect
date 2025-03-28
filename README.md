@@ -185,6 +185,10 @@ docker-compose logs backend
    - For Android emulators: use `10.0.2.2` (special redirect to host machine)
    - For physical devices: use your computer's actual IP address on the network
 
+4. For running the Docker compose container on windows, if there are issues connecting to the frontend, try:
+   - netsh interface portproxy add v4tov4 listenaddress={your local ip} listenport=8080 connectaddress=127.0.0.1 connectport=8080
+   - This should fix issues with WSL permissions on the network
+
 ### Database Connectivity Issues
 
 If the backend cannot connect to the database:

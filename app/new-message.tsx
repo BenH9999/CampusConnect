@@ -189,6 +189,9 @@ export default function NewMessageScreen() {
       ) : (
         <>
           <View style={styles.searchContainer}>
+            <Pressable onPress={() => router.back()} style={styles.backButton}>
+              <FontAwesome name="arrow-left" size={16} color="#FDC787" />
+            </Pressable>
             <FontAwesome name="search" size={16} color="#999" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
@@ -260,6 +263,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#2A3346',
+  },
+  backButton: {
+    marginRight: 16,
+    padding: 4,
   },
   searchIcon: {
     marginRight: 10,
