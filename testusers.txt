@@ -1,0 +1,8 @@
+bob@example.com
+password
+
+alice@example.com
+password
+
+charlie@example.com
+password

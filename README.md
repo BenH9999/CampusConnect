@@ -22,6 +22,9 @@ A social media platform for university students to connect, share posts, and int
 - **Database:** PostgreSQL
 - **Containerization:** Docker, Docker Compose
 
+## Test Users
+- the email and password for default test users that are initialised in the database are in testusers.txt
+
 ## System Requirements
 
 - At least 2GB of free RAM for Docker containers
